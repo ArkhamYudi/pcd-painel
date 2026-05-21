@@ -1,5 +1,5 @@
 -- By: 〃Yudi | AnG 👼
--- ✅ PONTO BRANCO FIXO | PEQUENO | SEM BUG
+-- ✅ ESP SUPER DISCRETO | QUASE INVISÍVEL | BYPASS VISUAL
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
@@ -15,8 +15,10 @@ end
 
 -- Configurações
 local SISTEMA_ATIVO = true
-local COR_BRANCA = Color3.new(1, 1, 1) -- Branco
-local TAMANHO_FIXO = 3 -- TAMANHO PEQUENO E FIXO, NÃO MUDA
+-- 🎨 COR SUPER DISCRETA: BRANCO MUITO CLARO E QUASE TRANSPARENTE
+local COR_DISCRETA = Color3.new(0.95, 0.95, 0.95)
+local TRANSPARENCIA = 0.7 -- Quanto mais alto, MAIS INVISÍVEL
+local TAMANHO_MINIMO = 2 -- Tamanho menor que o anterior
 local Desenhos = {}
 
 -- ✅ COMANDOS
@@ -27,7 +29,7 @@ local comandos = {
     "〃zLockpick | AnG 👼",
     "〃zKitRepar | AnG 👼",
     "〃Imobilizar + Segurar | AnG 👼",
-    "👼" -- Botão só com emoji
+    "👼"
 }
 
 -- Função enviar mensagem
@@ -41,7 +43,7 @@ local function EnviarMensagem(msg)
     end)
 end
 
--- Sistema de marcação → PONTO BRANCO PEQUENO E FIXO
+-- Sistema de marcação → AGORA SUPER DISCRETO
 local function CriarMarcacao(jogador)
     if jogador == LocalPlayer or Desenhos[jogador] then return end
 
@@ -51,8 +53,9 @@ local function CriarMarcacao(jogador)
 
     local d = Desenhos[jogador]
     d.Ponto.Thickness = 1
-    d.Ponto.NumSides = 12 -- Mais fino e redondo
-    d.Ponto.Filled = true -- Preenchido, fica melhor visível
+    d.Ponto.NumSides = 8 -- Menos lados, fica quase um pontinho simples
+    d.Ponto.Filled = true
+    d.Ponto.Transparency = TRANSPARENCIA -- CHAVE DO BYPASS: quase transparente
 end
 
 local function RemoverMarcacao(jogador)
@@ -62,7 +65,7 @@ local function RemoverMarcacao(jogador)
     end
 end
 
--- Atualização CORRIGIDA
+-- Atualização
 RunService.RenderStepped:Connect(function()
     if not SISTEMA_ATIVO then
         for _, desenho in pairs(Desenhos) do
@@ -78,10 +81,10 @@ RunService.RenderStepped:Connect(function()
             local posTela, visivel = Camera:WorldToViewportPoint(hrp.Position)
 
             if visivel and char.Humanoid.Health > 0 then
-                -- 🎯 AGORA TAMANHO FIXO, NÃO CRESCE NEM DIMINUI
-                desenho.Ponto.Radius = TAMANHO_FIXO -- Valor fixo!
+                -- 🎯 SUPER DISCRETO: pequeno + transparente
+                desenho.Ponto.Radius = TAMANHO_MINIMO
                 desenho.Ponto.Position = Vector2.new(posTela.X, posTela.Y)
-                desenho.Ponto.Color = COR_BRANCA
+                desenho.Ponto.Color = COR_DISCRETA
                 desenho.Ponto.Visible = true
             else
                 desenho.Ponto.Visible = false
@@ -98,7 +101,7 @@ for _, p in pairs(Players:GetPlayers()) do
     task.spawn(CriarMarcacao, p)
 end
 
--- 📱 INTERFACE MESMA DE SEMPRE
+-- 📱 INTERFACE
 local Gui = Instance.new("ScreenGui")
 Gui.Name = "MenuAnG"
 Gui.ResetOnSpawn = false
@@ -191,7 +194,11 @@ for _, comando in ipairs(comandos) do
     Btn.MouseButton1Click:Connect(function()
         if comando == "👼" then
             SISTEMA_ATIVO = not SISTEMA_ATIVO
-            Btn.BackgroundColor3 = SISTEMA_ATIVO and Color3.new(0, 0.6, 0) or Color3.new(0.6, 0, 0)
+            if SISTEMA_ATIVO then
+                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0)
+            else
+                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0)
+            end
         else
             EnviarMensagem(comando)
         end
