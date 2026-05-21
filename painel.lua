@@ -1,5 +1,5 @@
 -- By: 〃Yudi | AnG 👼
--- ✅ VERSÃO FINAL | 100% FUNCIONAL | MINIMALISTA
+-- ✅ PONTO BRANCO MINÚSCULO | DISCRETO
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
@@ -15,10 +15,11 @@ end
 
 -- Configurações
 local SISTEMA_ATIVO = true
-local COR_ROXA = Color3.new(0.7, 0, 1) -- Cor única
+local COR_BRANCA = Color3.new(1, 1, 1) -- Branco
+local TAMANHO_PONTO = 2 -- TAMANHO MÍNIMO, SÓ UM PONTO
 local Desenhos = {}
 
--- ✅ COMANDOS (sem os que pediu para remover)
+-- ✅ COMANDOS
 local comandos = {
     "〃zKill | AnG 👼",
     "〃zRender | AnG 👼",
@@ -40,29 +41,22 @@ local function EnviarMensagem(msg)
     end)
 end
 
--- Sistema de marcação (SÓ CÍRCULO ROXO)
+-- Sistema de marcação → AGORA É SÓ UM PONTO BRANCO PEQUENO
 local function CriarMarcacao(jogador)
     if jogador == LocalPlayer or Desenhos[jogador] then return end
 
     Desenhos[jogador] = {
-        Nome = Drawing.new("Text"),
-        Circulo = Drawing.new("Circle")
+        Ponto = Drawing.new("Circle") -- Agora é ponto pequeno
     }
 
     local d = Desenhos[jogador]
-    d.Nome.Size = 12
-    d.Nome.Center = true
-    d.Nome.Outline = true
-    d.Nome.OutlineColor = Color3.new(0,0,0)
-
-    d.Circulo.Thickness = 2
-    d.Circulo.NumSides = 32
+    d.Ponto.Thickness = 1
+    d.Ponto.NumSides = 16 -- Deixa redondo mas pequeno
 end
 
 local function RemoverMarcacao(jogador)
     if Desenhos[jogador] then
-        Desenhos[jogador].Nome:Remove()
-        Desenhos[jogador].Circulo:Remove()
+        Desenhos[jogador].Ponto:Remove()
         Desenhos[jogador] = nil
     end
 end
@@ -71,8 +65,7 @@ end
 RunService.RenderStepped:Connect(function()
     if not SISTEMA_ATIVO then
         for _, desenho in pairs(Desenhos) do
-            desenho.Nome.Visible = false
-            desenho.Circulo.Visible = false
+            desenho.Ponto.Visible = false
         end
         return
     end
@@ -84,25 +77,16 @@ RunService.RenderStepped:Connect(function()
             local posTela, visivel = Camera:WorldToViewportPoint(hrp.Position)
 
             if visivel and char.Humanoid.Health > 0 then
-                -- Círculo roxo
-                local raio = 30 / posTela.Z * 70
-                desenho.Circulo.Radius = raio
-                desenho.Circulo.Position = Vector2.new(posTela.X, posTela.Y)
-                desenho.Circulo.Color = COR_ROXA
-                desenho.Circulo.Visible = true
-
-                -- Nome
-                desenho.Nome.Text = jogador.Name
-                desenho.Nome.Position = Vector2.new(posTela.X, posTela.Y - raio - 8)
-                desenho.Nome.Color = COR_ROXA
-                desenho.Nome.Visible = true
+                -- 🎯 SÓ O PONTO BRANCO MINÚSCULO
+                desenho.Ponto.Radius = TAMANHO_PONTO -- Tamanho mínimo
+                desenho.Ponto.Position = Vector2.new(posTela.X, posTela.Y)
+                desenho.Ponto.Color = COR_BRANCA
+                desenho.Ponto.Visible = true
             else
-                desenho.Nome.Visible = false
-                desenho.Circulo.Visible = false
+                desenho.Ponto.Visible = false
             end
         else
-            desenho.Nome.Visible = false
-            desenho.Circulo.Visible = false
+            desenho.Ponto.Visible = false
         end
     end
 end)
@@ -113,7 +97,7 @@ for _, p in pairs(Players:GetPlayers()) do
     task.spawn(CriarMarcacao, p)
 end
 
--- 📱 INTERFACE PEQUENA E LIMPA
+-- 📱 INTERFACE IGUAL A ANTES
 local Gui = Instance.new("ScreenGui")
 Gui.Name = "MenuAnG"
 Gui.ResetOnSpawn = false
@@ -122,7 +106,7 @@ Gui.Parent = PlayerGui
 
 local Frame = Instance.new("Frame")
 Frame.Parent = Gui
-Frame.Size = UDim2.new(0, 170, 0, 230) -- Tamanho mínimo
+Frame.Size = UDim2.new(0, 170, 0, 230)
 Frame.Position = UDim2.new(0.05, 0, 0.2, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Frame.BorderSizePixel = 0
@@ -183,7 +167,7 @@ local Layout = Instance.new("UIListLayout")
 Layout.Parent = Scrool
 Layout.Padding = UDim.new(0, 2)
 
--- 🎛️ CRIAÇÃO DOS BOTÕES
+-- 🎛️ BOTÕES
 local BotaoAnjo
 
 for _, comando in ipairs(comandos) do
@@ -198,16 +182,14 @@ for _, comando in ipairs(comandos) do
     Btn.BorderSizePixel = 0
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 4)
 
-    -- Botão especial do anjo
     if comando == "👼" then
         BotaoAnjo = Btn
-        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Começa verde
+        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0)
     end
 
     Btn.MouseButton1Click:Connect(function()
         if comando == "👼" then
             SISTEMA_ATIVO = not SISTEMA_ATIVO
-            -- Muda cor só, sem texto
             Btn.BackgroundColor3 = SISTEMA_ATIVO and Color3.new(0, 0.6, 0) or Color3.new(0.6, 0, 0)
         else
             EnviarMensagem(comando)
@@ -231,7 +213,6 @@ BotaoFlutuante.Draggable = true
 BotaoFlutuante.BorderSizePixel = 0
 Instance.new("UICorner", BotaoFlutuante).CornerRadius = UDim.new(1, 0)
 
--- Ações dos botões
 BotaoMinimizar.MouseButton1Click:Connect(function()
     Frame.Visible = false
     BotaoFlutuante.Visible = true
