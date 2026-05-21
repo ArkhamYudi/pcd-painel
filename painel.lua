@@ -1,9 +1,10 @@
 -- By: 〃Yudi | AnG 👼
--- ✅ ESP SUPER DISCRETO | QUASE INVISÍVEL | BYPASS VISUAL
+-- ✅ BOTÃO SEPARADO 🚀 ANTI LAG | 👼 ESP DISCRETO
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Lighting = game:GetService("Lighting")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Camera = workspace.CurrentCamera
@@ -13,15 +14,15 @@ if PlayerGui:FindFirstChild("MenuAnG") then
     PlayerGui.MenuAnG:Destroy()
 end
 
--- Configurações
-local SISTEMA_ATIVO = true
--- 🎨 COR SUPER DISCRETA: BRANCO MUITO CLARO E QUASE TRANSPARENTE
+-- ⚙️ CONFIGURAÇÕES
+local ESP_ATIVO = true
+local ANTI_LAG_ATIVO = true -- Começa ligado
 local COR_DISCRETA = Color3.new(0.95, 0.95, 0.95)
-local TRANSPARENCIA = 0.7 -- Quanto mais alto, MAIS INVISÍVEL
-local TAMANHO_MINIMO = 2 -- Tamanho menor que o anterior
+local TRANSPARENCIA = 0.7
+local TAMANHO_MINIMO = 2
 local Desenhos = {}
 
--- ✅ COMANDOS
+-- ✅ LISTA DE COMANDOS (AGORA COM OS DOIS BOTÕES: 🚀 e 👼)
 local comandos = {
     "〃zKill | AnG 👼",
     "〃zRender | AnG 👼",
@@ -29,8 +30,36 @@ local comandos = {
     "〃zLockpick | AnG 👼",
     "〃zKitRepar | AnG 👼",
     "〃Imobilizar + Segurar | AnG 👼",
-    "👼"
+    "🚀", -- BOTÃO DO ANTI LAG
+    "👼"  -- BOTÃO DO ESP
 }
+
+-- 🚀 SISTEMA DE ANTI LAG / FPS BOOST (ATIVA/DESATIVA)
+RunService.Heartbeat:Connect(function()
+    pcall(function()
+        if ANTI_LAG_ATIVO then
+            -- LIGADO: Otimiza tudo
+            Lighting.GlobalShadows = false
+            Lighting.FogEnd = 9e9
+            Lighting.Brightness = 1
+            Lighting.Ambient = Color3.new(1,1,1)
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            
+            -- Remove efeitos pesados
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("Light") then
+                    v:Destroy()
+                end
+                if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" and v.Transparency > 0 then
+                    v.CanCollide = false
+                end
+            end
+        else
+            -- DESLIGADO: Volta ao normal
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level21
+        end
+    end)
+end)
 
 -- Função enviar mensagem
 local function EnviarMensagem(msg)
@@ -43,7 +72,7 @@ local function EnviarMensagem(msg)
     end)
 end
 
--- Sistema de marcação → AGORA SUPER DISCRETO
+-- 👼 SISTEMA DE ESP DISCRETO
 local function CriarMarcacao(jogador)
     if jogador == LocalPlayer or Desenhos[jogador] then return end
 
@@ -53,9 +82,9 @@ local function CriarMarcacao(jogador)
 
     local d = Desenhos[jogador]
     d.Ponto.Thickness = 1
-    d.Ponto.NumSides = 8 -- Menos lados, fica quase um pontinho simples
+    d.Ponto.NumSides = 4
     d.Ponto.Filled = true
-    d.Ponto.Transparency = TRANSPARENCIA -- CHAVE DO BYPASS: quase transparente
+    d.Ponto.Transparency = TRANSPARENCIA
 end
 
 local function RemoverMarcacao(jogador)
@@ -65,9 +94,9 @@ local function RemoverMarcacao(jogador)
     end
 end
 
--- Atualização
+-- Atualização ESP
 RunService.RenderStepped:Connect(function()
-    if not SISTEMA_ATIVO then
+    if not ESP_ATIVO then
         for _, desenho in pairs(Desenhos) do
             desenho.Ponto.Visible = false
         end
@@ -76,12 +105,11 @@ RunService.RenderStepped:Connect(function()
 
     for jogador, desenho in pairs(Desenhos) do
         local char = jogador.Character
-        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") then
+        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") and char.Humanoid.Health > 0 then
             local hrp = char.HumanoidRootPart
             local posTela, visivel = Camera:WorldToViewportPoint(hrp.Position)
 
-            if visivel and char.Humanoid.Health > 0 then
-                -- 🎯 SUPER DISCRETO: pequeno + transparente
+            if visivel then
                 desenho.Ponto.Radius = TAMANHO_MINIMO
                 desenho.Ponto.Position = Vector2.new(posTela.X, posTela.Y)
                 desenho.Ponto.Color = COR_DISCRETA
@@ -171,8 +199,8 @@ local Layout = Instance.new("UIListLayout")
 Layout.Parent = Scrool
 Layout.Padding = UDim.new(0, 2)
 
--- 🎛️ BOTÕES
-local BotaoAnjo
+-- 🎛️ CRIAÇÃO DOS BOTÕES
+local BotaoAntiLag, BotaoESP
 
 for _, comando in ipairs(comandos) do
     local Btn = Instance.new("TextButton")
@@ -186,19 +214,37 @@ for _, comando in ipairs(comandos) do
     Btn.BorderSizePixel = 0
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 4)
 
-    if comando == "👼" then
-        BotaoAnjo = Btn
-        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0)
+    -- BOTÃO DO ANTI LAG 🚀
+    if comando == "🚀" then
+        BotaoAntiLag = Btn
+        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Começa VERDE (ligado)
     end
 
+    -- BOTÃO DO ESP 👼
+    if comando == "👼" then
+        BotaoESP = Btn
+        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Começa VERDE (ligado)
+    end
+
+    -- AÇÃO DOS BOTÕES
     Btn.MouseButton1Click:Connect(function()
-        if comando == "👼" then
-            SISTEMA_ATIVO = not SISTEMA_ATIVO
-            if SISTEMA_ATIVO then
-                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0)
+        -- Anti Lag
+        if comando == "🚀" then
+            ANTI_LAG_ATIVO = not ANTI_LAG_ATIVO
+            if ANTI_LAG_ATIVO then
+                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Verde = Ligado
             else
-                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0)
+                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0) -- Vermelho = Desligado
             end
+        -- ESP
+        elseif comando == "👼" then
+            ESP_ATIVO = not ESP_ATIVO
+            if ESP_ATIVO then
+                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Verde = Ligado
+            else
+                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0) -- Vermelho = Desligado
+            end
+        -- Comandos de chat
         else
             EnviarMensagem(comando)
         end
