@@ -1,202 +1,140 @@
---// SERVIÇOS
+-- By: 〃Yudi | AnG 👼
 local Players = game:GetService("Players")
 local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local player = Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
---// DESTRUIR SE JÁ EXISTIR
-if PlayerGui:FindFirstChild("PCDMENU") then
-    PlayerGui.PCDMENU:Destroy()
-end
+-- Remove menu antigo
+if PlayerGui:FindFirstChild("UFCMenu") then PlayerGui.UFCMenu:Destroy() end
 
---// COMANDOS ATUALIZADOS (SEUS NOVOS) ✅
+-- ✅ Apenas o que você pediu: principais, sem finalizações
 local comandos = {
-    "/ ' nao chorax 😭🥹😢✌️",
-    "/ ' nao caga 🥷🏼🥊👿",
-    "/ ' city booy 😎🔥🤙💨",
-    "/ ' siquis sevi 😏😏💅💅🔥",
-    "/ ' Que W 🗿🗿😎😎🤙🔥",
-    "/ ' say walahi bro 🗣️🙏😤🔥",
-    "/ ' skibidi 📺🔊😈💀🔥",
-    "/ ' ez 😂😎✌️💅",
-    "/ ' Sigma boy 🗿😎😈🤙🔥",
-    "/ ' tuff dms tropa 💪💪😤😤🗿🚀",
+    "〃Soco Direto | AnG 👼",
+    "〃Soco Cruzado | AnG 👼",
+    "〃Gancho | AnG 👼",
+    "〃Uppercut | AnG 👼",
+    "〃Chute | AnG 👼",
+    "〃Derrubar | AnG 👼",
+    "〃Mata Leão | AnG 👼",
+    "〃Chave de Braço | AnG 👼",
+    "〃Desmaiar | AnG 👼",
+    "〃Imobilizar | AnG 👼"
 }
 
---// FUNÇÃO ENVIAR MENSAGEM
+-- Função de envio CORRIGIDA e segura
 local function enviarMensagem(msg)
-    if not msg or msg == "" then return end
     pcall(function()
         if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
             TextChatService.TextChannels.RBXGeneral:SendAsync(msg)
         else
-            game:GetService("ReplicatedStorage")
-                .DefaultChatSystemChatEvents
-                .SayMessageRequest:FireServer(msg, "All")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
         end
     end)
 end
 
---// GUI PRINCIPAL
+-- Interface completa e estável
 local gui = Instance.new("ScreenGui")
-gui.Name = "PCDMENU"
+gui.Name = "UFCMenu"
 gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = PlayerGui
 
---// FRAME PRINCIPAL → TAMANHO PEQUENO (110 DE LARGURA) + ESTÉTICA DO SEU MODELO
 local frame = Instance.new("Frame")
 frame.Parent = gui
-frame.Size = UDim2.new(0, 110, 0, 0) -- LARGURA PEQUENA, ALTURA AJUSTA DEPOIS
-frame.Position = UDim2.new(0.38, 0, 0.22, 0)
-frame.BackgroundColor3 = Color3.fromRGB(10, 10, 10) -- FUNDO PRETO IGUAL
-frame.BorderSizePixel = 2
-frame.BorderColor3 = Color3.fromRGB(120, 0, 0) -- BORDA VERMELHA
+frame.Size = UDim2.new(0,310,0,400)
+frame.Position = UDim2.new(0.35,0,0.2,0)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
 
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 14) -- CANTOS ARREDONDADOS
-UICorner.Parent = frame
-
---// BARRA SUPERIOR IGUAL
 local top = Instance.new("Frame")
 top.Parent = frame
-top.Size = UDim2.new(1, 0, 0, 42)
-top.BackgroundColor3 = Color3.fromRGB(140, 0, 0) -- VERMELHO
+top.Size = UDim2.new(1,0,0,40)
+top.BackgroundColor3 = Color3.fromRGB(35,35,35)
 top.BorderSizePixel = 0
+Instance.new("UICorner", top).CornerRadius = UDim.new(0,12)
 
-local UICornerTop = Instance.new("UICorner")
-UICornerTop.CornerRadius = UDim.new(0, 14)
-UICornerTop.Parent = top
-
---// TÍTULO
 local title = Instance.new("TextLabel")
 title.Parent = top
-title.Size = UDim2.new(1, -20, 1, 0)
-title.Position = UDim2.new(0, 6, 0, 0)
+title.Size = UDim2.new(1,-80,1,0)
+title.Position = UDim2.new(0,10,0,0)
 title.BackgroundTransparency = 1
-title.Text = "😭 PCD 😭"
-title.TextColor3 = Color3.new(1, 1, 1)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 12
+title.Text = "👼 〃 UFC | AnG"
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
 title.TextXAlignment = Enum.TextXAlignment.Left
 
---// BOTÃO MINIMIZAR
 local mini = Instance.new("TextButton")
 mini.Parent = top
-mini.Size = UDim2.new(0, 22, 0, 22)
-mini.Position = UDim2.new(1, -44, 0, 10)
+mini.Size = UDim2.new(0,30,0,30)
+mini.Position = UDim2.new(1,-70,0,5)
 mini.Text = "-"
 mini.Font = Enum.Font.GothamBold
-mini.TextSize = 16
-mini.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-mini.TextColor3 = Color3.new(1, 1, 1)
+mini.TextSize = 20
+mini.BackgroundColor3 = Color3.fromRGB(70,70,70)
+mini.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", mini).CornerRadius = UDim.new(1,0)
 
-local UICornerMini = Instance.new("UICorner")
-UICornerMini.CornerRadius = UDim.new(1, 0)
-UICornerMini.Parent = mini
-
---// BOTÃO FECHAR
 local close = Instance.new("TextButton")
 close.Parent = top
-close.Size = UDim2.new(0, 22, 0, 22)
-close.Position = UDim2.new(1, -24, 0, 10)
+close.Size = UDim2.new(0,30,0,30)
+close.Position = UDim2.new(1,-35,0,5)
 close.Text = "X"
 close.Font = Enum.Font.GothamBold
-close.TextSize = 12
-close.BackgroundColor3 = Color3.fromRGB(220, 20, 20)
-close.TextColor3 = Color3.new(1, 1, 1)
+close.TextSize = 18
+close.BackgroundColor3 = Color3.fromRGB(170,40,40)
+close.TextColor3 = Color3.new(1,1,1)
+Instance.new("UICorner", close).CornerRadius = UDim.new(1,0)
 
-local UICornerClose = Instance.new("UICorner")
-UICornerClose.CornerRadius = UDim.new(1, 0)
-UICornerClose.Parent = close
-
---// ÁREA DE ROLAGEM
 local scroll = Instance.new("ScrollingFrame")
 scroll.Parent = frame
-scroll.Position = UDim2.new(0, 4, 0, 47)
-scroll.Size = UDim2.new(1, -8, 1, -52)
+scroll.Position = UDim2.new(0,5,0,45)
+scroll.Size = UDim2.new(1,-10,1,-50)
 scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
-scroll.ScrollBarThickness = 3
-scroll.ScrollBarImageColor3 = Color3.fromRGB(150, 0, 0)
-scroll.CanvasSize = UDim2.new(0, 0, 0, #comandos * 32)
+scroll.ScrollBarThickness = 5
+scroll.CanvasSize = UDim2.new(0,0,0,#comandos * 45)
 
---// ORGANIZAÇÃO
 local layout = Instance.new("UIListLayout")
 layout.Parent = scroll
-layout.Padding = UDim.new(0, 4)
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.Padding = UDim.new(0,5)
 
---// CRIAR BOTÕES → ESTÉTICA IGUAL, MAS MENORES
-for _, cmd in ipairs(comandos) do
+-- Botões
+for _,cmd in ipairs(comandos) do
     local btn = Instance.new("TextButton")
     btn.Parent = scroll
-    btn.Size = UDim2.new(1, -6, 0, 28)
-    btn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 10
+    btn.Size = UDim2.new(1,-5,0,40)
+    btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    btn.TextColor3 = Color3.new(1,1,1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 14
     btn.Text = cmd
-    btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.fromRGB(90, 0, 0)
-    btn.AutoButtonColor = false
-
-    local UICornerBtn = Instance.new("UICorner")
-    UICornerBtn.CornerRadius = UDim.new(0, 8)
-    UICornerBtn.Parent = btn
-
-    --// EFEITO DE PASSAR O MOUSE → IGUAL O SEU
-    btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(110, 0, 0)
-        btn.TextColor3 = Color3.fromRGB(255, 255, 0)
-    end)
-    btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
-        btn.TextColor3 = Color3.new(1, 1, 1)
-    end)
-
-    --// AO CLICAR
-    btn.MouseButton1Click:Connect(function()
-        enviarMensagem(cmd)
-    end)
+    btn.BorderSizePixel = 0
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+    btn.MouseButton1Click:Connect(function() enviarMensagem(cmd) end)
 end
 
---// AJUSTA ALTURA FINAL DO PAINEL
-frame.Size = UDim2.new(0, 110, 0, 47 + (#comandos * 32) + 6)
-
---// BOTÃO FLUTUANTE (QUANDO MINIMIZADO)
+-- Botão flutuante
 local bola = Instance.new("TextButton")
 bola.Parent = gui
-bola.Size = UDim2.new(0, 50, 0, 50)
-bola.Position = UDim2.new(0.05, 0, 0.7, 0)
-bola.BackgroundColor3 = Color3.fromRGB(20, 0, 0)
-bola.BorderSizePixel = 2
-bola.BorderColor3 = Color3.fromRGB(150, 0, 0)
-bola.Text = "😭"
-bola.TextColor3 = Color3.new(1, 1, 1)
+bola.Size = UDim2.new(0,60,0,60)
+bola.Position = UDim2.new(0.05,0,0.7,0)
+bola.BackgroundColor3 = Color3.fromRGB(20,20,20)
+bola.Text = "👼"
+bola.TextColor3 = Color3.new(1,1,1)
 bola.Font = Enum.Font.GothamBold
-bola.TextSize = 24
+bola.TextSize = 28
 bola.Visible = false
 bola.Active = true
 bola.Draggable = true
+bola.BorderSizePixel = 0
+Instance.new("UICorner", bola).CornerRadius = UDim.new(1,0)
 
-local UICornerBola = Instance.new("UICorner")
-UICornerBola.CornerRadius = UDim.new(1, 0)
-UICornerBola.Parent = bola
-
---// AÇÕES
-mini.MouseButton1Click:Connect(function()
-    frame.Visible = false
-    bola.Visible = true
-end)
-
-bola.MouseButton1Click:Connect(function()
-    frame.Visible = true
-    bola.Visible = false
-end)
-
-close.MouseButton1Click:Connect(function()
-    gui:Destroy()
-end)
+mini.MouseButton1Click:Connect(function() frame.Visible=false; bola.Visible=true end)
+bola.MouseButton1Click:Connect(function() frame.Visible=true; bola.Visible=false end)
+close.MouseButton1Click:Connect(function() gui:Destroy() end)
