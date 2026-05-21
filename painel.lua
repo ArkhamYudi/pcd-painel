@@ -38,7 +38,7 @@ local comandos = {
     "〃zFurar Pneu | AnG 👼",
     "〃zLockpick | AnG 👼",
     "〃zKitRepar | AnG 👼",
-    "〃Imobilizar + Segurar | AnG 👼",
+    "〃PdPerm | AnG 👼",
     "🚀", -- Anti Lag
     "👼"  -- ESP
 }
