@@ -1,5 +1,5 @@
 -- By: 〃Yudi | AnG 👼
--- ✅ PONTO BRANCO MINÚSCULO | DISCRETO
+-- ✅ PONTO BRANCO FIXO | PEQUENO | SEM BUG
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
@@ -16,7 +16,7 @@ end
 -- Configurações
 local SISTEMA_ATIVO = true
 local COR_BRANCA = Color3.new(1, 1, 1) -- Branco
-local TAMANHO_PONTO = 2 -- TAMANHO MÍNIMO, SÓ UM PONTO
+local TAMANHO_FIXO = 3 -- TAMANHO PEQUENO E FIXO, NÃO MUDA
 local Desenhos = {}
 
 -- ✅ COMANDOS
@@ -41,17 +41,18 @@ local function EnviarMensagem(msg)
     end)
 end
 
--- Sistema de marcação → AGORA É SÓ UM PONTO BRANCO PEQUENO
+-- Sistema de marcação → PONTO BRANCO PEQUENO E FIXO
 local function CriarMarcacao(jogador)
     if jogador == LocalPlayer or Desenhos[jogador] then return end
 
     Desenhos[jogador] = {
-        Ponto = Drawing.new("Circle") -- Agora é ponto pequeno
+        Ponto = Drawing.new("Circle")
     }
 
     local d = Desenhos[jogador]
     d.Ponto.Thickness = 1
-    d.Ponto.NumSides = 16 -- Deixa redondo mas pequeno
+    d.Ponto.NumSides = 12 -- Mais fino e redondo
+    d.Ponto.Filled = true -- Preenchido, fica melhor visível
 end
 
 local function RemoverMarcacao(jogador)
@@ -61,7 +62,7 @@ local function RemoverMarcacao(jogador)
     end
 end
 
--- Atualização
+-- Atualização CORRIGIDA
 RunService.RenderStepped:Connect(function()
     if not SISTEMA_ATIVO then
         for _, desenho in pairs(Desenhos) do
@@ -77,8 +78,8 @@ RunService.RenderStepped:Connect(function()
             local posTela, visivel = Camera:WorldToViewportPoint(hrp.Position)
 
             if visivel and char.Humanoid.Health > 0 then
-                -- 🎯 SÓ O PONTO BRANCO MINÚSCULO
-                desenho.Ponto.Radius = TAMANHO_PONTO -- Tamanho mínimo
+                -- 🎯 AGORA TAMANHO FIXO, NÃO CRESCE NEM DIMINUI
+                desenho.Ponto.Radius = TAMANHO_FIXO -- Valor fixo!
                 desenho.Ponto.Position = Vector2.new(posTela.X, posTela.Y)
                 desenho.Ponto.Color = COR_BRANCA
                 desenho.Ponto.Visible = true
@@ -97,7 +98,7 @@ for _, p in pairs(Players:GetPlayers()) do
     task.spawn(CriarMarcacao, p)
 end
 
--- 📱 INTERFACE IGUAL A ANTES
+-- 📱 INTERFACE MESMA DE SEMPRE
 local Gui = Instance.new("ScreenGui")
 Gui.Name = "MenuAnG"
 Gui.ResetOnSpawn = false
