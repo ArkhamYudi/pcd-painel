@@ -1,5 +1,5 @@
 -- By: 〃Yudi | AnG 👼
--- ✅ BOTÃO SEPARADO 🚀 ANTI LAG | 👼 ESP DISCRETO
+-- ✅ ANTI LAG REAL | CORES CINZA→VERDE→VERMELHO | ESP DISCRETO
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TextChatService = game:GetService("TextChatService")
@@ -15,14 +15,21 @@ if PlayerGui:FindFirstChild("MenuAnG") then
 end
 
 -- ⚙️ CONFIGURAÇÕES
-local ESP_ATIVO = true
-local ANTI_LAG_ATIVO = true -- Começa ligado
+-- Estados: 0 = Cinza/Desligado | 1 = Verde/Ligado | 2 = Vermelho/Desligado
+local ESTADO_ESP = 0
+local ESTADO_ANTILAG = 0
+
+local COR_CINZA = Color3.fromRGB(80, 80, 80)
+local COR_VERDE = Color3.new(0, 0.6, 0)
+local COR_VERMELHO = Color3.new(0.7, 0, 0)
+
+-- ESP
 local COR_DISCRETA = Color3.new(0.95, 0.95, 0.95)
 local TRANSPARENCIA = 0.7
 local TAMANHO_MINIMO = 2
 local Desenhos = {}
 
--- ✅ LISTA DE COMANDOS (AGORA COM OS DOIS BOTÕES: 🚀 e 👼)
+-- ✅ COMANDOS
 local comandos = {
     "〃zKill | AnG 👼",
     "〃zRender | AnG 👼",
@@ -30,33 +37,34 @@ local comandos = {
     "〃zLockpick | AnG 👼",
     "〃zKitRepar | AnG 👼",
     "〃Imobilizar + Segurar | AnG 👼",
-    "🚀", -- BOTÃO DO ANTI LAG
-    "👼"  -- BOTÃO DO ESP
+    "🚀", -- Anti Lag
+    "👼"  -- ESP
 }
 
--- 🚀 SISTEMA DE ANTI LAG / FPS BOOST (ATIVA/DESATIVA)
+-- 🚀 SISTEMA DE ANTI LAG REAL (AGORA SIM, AUMENTA FPS)
 RunService.Heartbeat:Connect(function()
     pcall(function()
-        if ANTI_LAG_ATIVO then
-            -- LIGADO: Otimiza tudo
-            Lighting.GlobalShadows = false
-            Lighting.FogEnd = 9e9
-            Lighting.Brightness = 1
-            Lighting.Ambient = Color3.new(1,1,1)
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
-            
-            -- Remove efeitos pesados
-            for _, v in pairs(workspace:GetDescendants()) do
-                if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") or v:IsA("Light") then
-                    v:Destroy()
+        if ESTADO_ANTILAG == 1 then -- LIGADO (VERDE)
+            -- Remove texturas completamente
+            for _, parte in pairs(workspace:GetDescendants()) do
+                if parte:IsA("BasePart") then
+                    parte.Material = Enum.Material.Plastic
+                    parte.TextureID = ""
+                    parte.Reflectance = 0
                 end
-                if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" and v.Transparency > 0 then
-                    v.CanCollide = false
+                -- Destroi tudo que consome desempenho
+                if parte:IsA("ParticleEmitter") or parte:IsA("Smoke") or parte:IsA("Fire") or parte:IsA("Sparkles") or parte:IsA("Light") or parte:IsA("Decal") then
+                    parte:Destroy()
                 end
             end
-        else
-            -- DESLIGADO: Volta ao normal
-            settings().Rendering.QualityLevel = Enum.QualityLevel.Level21
+            -- Configurações gráficas mínimas
+            Lighting.GlobalShadows = false
+            Lighting.FogEnd = 0
+            Lighting.Brightness = 0.5
+            Lighting.Ambient = Color3.new(0.3, 0.3, 0.3)
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            settings().Physics.FramerateLimit = 0
+            settings().Physics.AllowSleep = true
         end
     end)
 end)
@@ -72,7 +80,7 @@ local function EnviarMensagem(msg)
     end)
 end
 
--- 👼 SISTEMA DE ESP DISCRETO
+-- 👼 SISTEMA DE ESP
 local function CriarMarcacao(jogador)
     if jogador == LocalPlayer or Desenhos[jogador] then return end
 
@@ -96,7 +104,7 @@ end
 
 -- Atualização ESP
 RunService.RenderStepped:Connect(function()
-    if not ESP_ATIVO then
+    if ESTADO_ESP ~= 1 then -- Se não estiver VERDE/LIGADO, esconde
         for _, desenho in pairs(Desenhos) do
             desenho.Ponto.Visible = false
         end
@@ -206,7 +214,7 @@ for _, comando in ipairs(comandos) do
     local Btn = Instance.new("TextButton")
     Btn.Parent = Scrool
     Btn.Size = UDim2.new(1, -2, 0, 24)
-    Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Btn.BackgroundColor3 = COR_CINZA -- INICIA CINZA COMO PEDIU
     Btn.TextColor3 = Color3.new(1, 1, 1)
     Btn.Font = Enum.Font.Gotham
     Btn.TextSize = 10
@@ -214,41 +222,40 @@ for _, comando in ipairs(comandos) do
     Btn.BorderSizePixel = 0
     Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 4)
 
-    -- BOTÃO DO ANTI LAG 🚀
+    -- BOTÃO ANTI LAG 🚀
     if comando == "🚀" then
         BotaoAntiLag = Btn
-        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Começa VERDE (ligado)
+        Btn.MouseButton1Click:Connect(function()
+            ESTADO_ANTILAG = ESTADO_ANTILAG + 1
+            if ESTADO_ANTILAG == 1 then
+                Btn.BackgroundColor3 = COR_VERDE -- VERDE = LIGADO
+            elseif ESTADO_ANTILAG >= 2 then
+                ESTADO_ANTILAG = 2
+                Btn.BackgroundColor3 = COR_VERMELHO -- VERMELHO = DESLIGADO
+            end
+        end)
     end
 
-    -- BOTÃO DO ESP 👼
+    -- BOTÃO ESP 👼
     if comando == "👼" then
         BotaoESP = Btn
-        Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Começa VERDE (ligado)
+        Btn.MouseButton1Click:Connect(function()
+            ESTADO_ESP = ESTADO_ESP + 1
+            if ESTADO_ESP == 1 then
+                Btn.BackgroundColor3 = COR_VERDE -- VERDE = LIGADO
+            elseif ESTADO_ESP >= 2 then
+                ESTADO_ESP = 2
+                Btn.BackgroundColor3 = COR_VERMELHO -- VERMELHO = DESLIGADO
+            end
+        end)
     end
 
-    -- AÇÃO DOS BOTÕES
-    Btn.MouseButton1Click:Connect(function()
-        -- Anti Lag
-        if comando == "🚀" then
-            ANTI_LAG_ATIVO = not ANTI_LAG_ATIVO
-            if ANTI_LAG_ATIVO then
-                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Verde = Ligado
-            else
-                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0) -- Vermelho = Desligado
-            end
-        -- ESP
-        elseif comando == "👼" then
-            ESP_ATIVO = not ESP_ATIVO
-            if ESP_ATIVO then
-                Btn.BackgroundColor3 = Color3.new(0, 0.6, 0) -- Verde = Ligado
-            else
-                Btn.BackgroundColor3 = Color3.new(0.7, 0, 0) -- Vermelho = Desligado
-            end
-        -- Comandos de chat
-        else
+    -- COMANDOS DE CHAT
+    if comando ~= "🚀" and comando ~= "👼" then
+        Btn.MouseButton1Click:Connect(function()
             EnviarMensagem(comando)
-        end
-    end)
+        end)
+    end
 end
 
 -- Botão flutuante
